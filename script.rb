@@ -51,6 +51,7 @@ class Script
     system("env | awk -F= '{print $1}' | sort")
 
     puts "Attempting to authenticate to Docker registry (#{SaturnCIRunnerAPI::DockerRegistryCache::URL})"
+    puts "Username: #{ENV["DOCKER_REGISTRY_CACHE_USERNAME"]}"
 
     if docker_registry_cache.authenticate
       puts "Docker registry cache authentication successful"
