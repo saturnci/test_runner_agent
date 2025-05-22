@@ -1,3 +1,5 @@
+require_relative "./request"
+
 module SaturnCIRunnerAPI
   class Client
     def initialize(host)

@@ -1,4 +1,5 @@
 require "base64"
+require_relative "./content_request"
 
 module SaturnCIRunnerAPI
   WAIT_INTERVAL_IN_SECONDS = 5

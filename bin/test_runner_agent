@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+require_relative "../lib/test_runner_agent"
+require_relative "../lib/credential"
+
+test_runner_agent = TestRunnerAgent.new(
+  test_runner_id: ENV["TEST_RUNNER_ID"],
+  credential: Credential.new(
+    host: ENV["SATURNCI_API_HOST"],
+    user_id: ENV["SATURNCI_API_USER_ID"],
+    api_token: ENV["SATURNCI_API_TOKEN"],
+  )
+)
+
+test_runner_agent.send_ready_signal
+puts "Ready signal sent"
+
+puts "Listening for assignments..."
+assignment = test_runner_agent.listen_for_assignment
+
+puts "Received assignment for run #{assignment["run_id"]}"
+test_runner_agent.execute(assignment)
