@@ -18,5 +18,9 @@ puts "Ready signal sent"
 puts "Listening for assignments..."
 assignment = test_runner_agent.listen_for_assignment
 
+if assignment.nil?
+  raise "Assignment is blank"
+end
+
 puts "Received assignment for run #{assignment["run_id"]}"
 test_runner_agent.execute(assignment)
