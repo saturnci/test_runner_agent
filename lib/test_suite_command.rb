@@ -1,9 +1,10 @@
 module SaturnCIRunnerAPI
   class TestSuiteCommand
-    def initialize(docker_registry_cache_image_url:, test_files_string:, rspec_seed:, rspec_documentation_output_filename:)
+    def initialize(docker_registry_cache_image_url:, number_of_concurrent_runs:, run_order_index:, rspec_seed:, rspec_documentation_output_filename:)
       @docker_registry_cache_image_url = docker_registry_cache_image_url
-      @test_files_string = test_files_string
-      @rspec_seed = rspec_seed
+      @number_of_concurrent_runs = number_of_concurrent_runs.to_i
+      @run_order_index = run_order_index.to_i
+      @rspec_seed = rspec_seed.to_i
       @rspec_documentation_output_filename = rspec_documentation_output_filename
     end
 
@@ -15,6 +16,13 @@ module SaturnCIRunnerAPI
       "docker compose -f .saturnci/docker-compose.yml run saturn_test_app #{rspec_command}"
     end
 
+    def test_files_string(test_files)
+      slice_size = test_files.size / @number_of_concurrent_runs
+      chunks = test_files.each_slice(slice_size.to_f.ceil).to_a
+      selected_tests = chunks[@run_order_index - 1]
+      selected_tests.join(" ")
+    end
+
     private
 
     def rspec_command
@@ -24,8 +32,12 @@ module SaturnCIRunnerAPI
         "--format=documentation",
         "--format json --out tmp/json_output.json",
         "--order rand:#{@rspec_seed}",
-        @test_files_string
+        test_files_string(test_files)
       ].join(' ')
+    end
+
+    def test_files
+      Dir.glob("./spec/**/*_spec.rb").shuffle(random: Random.new(@rspec_seed))
     end
   end
 end
