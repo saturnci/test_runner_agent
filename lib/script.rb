@@ -17,6 +17,8 @@ TEST_RESULTS_FILENAME = "tmp/test_results.txt"
 def execute_script
   $stdout.sync = true
 
+  puts "Test runner agent version: #{`git rev-parse HEAD`.strip}"
+
   client = SaturnCIRunnerAPI::Client.new(ENV["HOST"])
 
   puts "Starting to stream system logs"
