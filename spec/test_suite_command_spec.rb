@@ -1,17 +1,17 @@
 require_relative "../lib/test_suite_command"
 
 describe SaturnCIRunnerAPI::TestSuiteCommand do
-  let!(:command) do
-    SaturnCIRunnerAPI::TestSuiteCommand.new(
-      docker_registry_cache_image_url: "registrycache.saturnci.com:5000/saturn_test_app:123456",
-      number_of_concurrent_runs: "1",
-      run_order_index: "1",
-      rspec_seed: "999",
-      rspec_documentation_output_filename: "tmp/test_output.txt"
-    )
-  end
-
   describe "to_s" do
+    let!(:command) do
+      SaturnCIRunnerAPI::TestSuiteCommand.new(
+        docker_registry_cache_image_url: "registrycache.saturnci.com:5000/saturn_test_app:123456",
+        number_of_concurrent_runs: "1",
+        run_order_index: "1",
+        rspec_seed: "999",
+        rspec_documentation_output_filename: "tmp/test_output.txt"
+      )
+    end
+
     before do
       allow(command).to receive(:test_files_string).and_return("spec/models/github_token_spec.rb spec/rebuilds_spec.rb")
     end
@@ -24,6 +24,16 @@ describe SaturnCIRunnerAPI::TestSuiteCommand do
   end
 
   describe "docker_compose_command" do
+    let!(:command) do
+      SaturnCIRunnerAPI::TestSuiteCommand.new(
+        docker_registry_cache_image_url: "registrycache.saturnci.com:5000/saturn_test_app:123456",
+        number_of_concurrent_runs: "1",
+        run_order_index: "1",
+        rspec_seed: "999",
+        rspec_documentation_output_filename: "tmp/test_output.txt"
+      )
+    end
+
     before do
       allow(command).to receive(:test_files_string).and_return("spec/models/github_token_spec.rb spec/rebuilds_spec.rb")
     end
@@ -34,9 +44,38 @@ describe SaturnCIRunnerAPI::TestSuiteCommand do
   end
 
   describe "test_files_string" do
-    it "works" do
-      test_files = ["spec/models/github_token_spec.rb", "spec/rebuilds_spec.rb", "spec/sign_up_spec.rb", "spec/test_spec.rb"]
-      expect(command.test_files_string(test_files)).to eq("spec/models/github_token_spec.rb spec/rebuilds_spec.rb spec/sign_up_spec.rb spec/test_spec.rb")
+    context "concurrency 2, order index 1" do
+      let!(:command) do
+        SaturnCIRunnerAPI::TestSuiteCommand.new(
+          docker_registry_cache_image_url: "registrycache.saturnci.com:5000/saturn_test_app:123456",
+          number_of_concurrent_runs: "2",
+          run_order_index: "1",
+          rspec_seed: "999",
+          rspec_documentation_output_filename: "tmp/test_output.txt"
+        )
+      end
+
+      it "includes the first two test files" do
+        test_files = ["spec/models/github_token_spec.rb", "spec/rebuilds_spec.rb", "spec/sign_up_spec.rb", "spec/test_spec.rb"]
+        expect(command.test_files_string(test_files)).to eq("spec/models/github_token_spec.rb spec/rebuilds_spec.rb")
+      end
+    end
+
+    context "concurrency 2, order index 2" do
+      let!(:command) do
+        SaturnCIRunnerAPI::TestSuiteCommand.new(
+          docker_registry_cache_image_url: "registrycache.saturnci.com:5000/saturn_test_app:123456",
+          number_of_concurrent_runs: "2",
+          run_order_index: "2",
+          rspec_seed: "999",
+          rspec_documentation_output_filename: "tmp/test_output.txt"
+        )
+      end
+
+      it "includes the second two test files" do
+        test_files = ["spec/models/github_token_spec.rb", "spec/rebuilds_spec.rb", "spec/sign_up_spec.rb", "spec/test_spec.rb"]
+        expect(command.test_files_string(test_files)).to eq("spec/sign_up_spec.rb spec/test_spec.rb")
+      end
     end
   end
 end
