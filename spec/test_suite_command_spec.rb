@@ -77,5 +77,22 @@ describe SaturnCIRunnerAPI::TestSuiteCommand do
         expect(command.test_files_string(test_files)).to eq("spec/sign_up_spec.rb spec/test_spec.rb")
       end
     end
+
+    context "no test files" do
+      let!(:command) do
+        SaturnCIRunnerAPI::TestSuiteCommand.new(
+          docker_registry_cache_image_url: "registrycache.saturnci.com:5000/saturn_test_app:123456",
+          number_of_concurrent_runs: "2",
+          run_order_index: "2",
+          rspec_seed: "999",
+          rspec_documentation_output_filename: "tmp/test_output.txt"
+        )
+      end
+
+      it "returns an empty string" do
+        test_files = []
+        expect(command.test_files_string(test_files)).to eq("")
+      end
+    end
   end
 end

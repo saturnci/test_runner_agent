@@ -17,6 +17,7 @@ module SaturnCIRunnerAPI
     end
 
     def test_files_string(test_files)
+      return "" if test_files.empty?
       slice_size = test_files.size / @number_of_concurrent_runs
       chunks = test_files.each_slice(slice_size.to_f.ceil).to_a
       selected_tests = chunks[@run_order_index - 1]
