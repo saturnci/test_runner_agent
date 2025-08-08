@@ -57,6 +57,9 @@ def execute_script
   puts "Environment variables set in this shell:"
   system("env | awk -F= '{print $1}' | sort")
 
+  puts "Project directory contents:"
+  system("ls -la")
+
   puts "Attempting to authenticate to Docker registry (#{SaturnCIRunnerAPI::DockerRegistryCache::URL})"
 
   if docker_registry_cache.authenticate
