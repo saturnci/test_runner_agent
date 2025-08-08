@@ -89,9 +89,9 @@ describe SaturnCIRunnerAPI::TestSuiteCommand do
         )
       end
 
-      it "returns an empty string" do
+      it "raises an exception" do
         test_files = []
-        expect(command.test_files_string(test_files)).to eq("")
+        expect { command.test_files_string(test_files) }.to raise_error(StandardError)
       end
     end
   end

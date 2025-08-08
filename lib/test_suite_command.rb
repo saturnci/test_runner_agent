@@ -1,5 +1,7 @@
 module SaturnCIRunnerAPI
   class TestSuiteCommand
+    TEST_FILE_GLOB = "./spec/**/*_spec.rb"
+
     def initialize(docker_registry_cache_image_url:, number_of_concurrent_runs:, run_order_index:, rspec_seed:, rspec_documentation_output_filename:)
       @docker_registry_cache_image_url = docker_registry_cache_image_url
       @number_of_concurrent_runs = number_of_concurrent_runs.to_i
@@ -17,7 +19,7 @@ module SaturnCIRunnerAPI
     end
 
     def test_files_string(test_files)
-      return "" if test_files.empty?
+      raise StandardError, "No test files found matching #{TEST_FILE_GLOB}" if test_files.empty?
       slice_size = test_files.size / @number_of_concurrent_runs
       chunks = test_files.each_slice(slice_size.to_f.ceil).to_a
       selected_tests = chunks[@run_order_index - 1]
@@ -38,7 +40,7 @@ module SaturnCIRunnerAPI
     end
 
     def test_files
-      Dir.glob("./spec/**/*_spec.rb").shuffle(random: Random.new(@rspec_seed))
+      Dir.glob(TEST_FILE_GLOB).shuffle(random: Random.new(@rspec_seed))
     end
   end
 end
