@@ -37,6 +37,8 @@ class TestRunnerAgent
 
         sleep interval_in_seconds
         check_count += 1
+        puts "check_limit: #{check_limit}"
+        puts "check_count: #{check_count}"
         return if check_limit && check_count >= check_limit
       rescue => e
         puts "Error checking for assignments: #{e.message}"
@@ -87,6 +89,8 @@ class TestRunnerAgent
   private
 
   def send_event(type)
+    puts "Sending event: #{type}"
+
     request = APIRequest.new(
       credential: @credential,
       endpoint: "test_runners/#{@test_runner_id}/test_runner_events",
