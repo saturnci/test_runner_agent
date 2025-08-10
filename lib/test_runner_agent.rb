@@ -24,6 +24,7 @@ class TestRunnerAgent
         response = request.response
 
         if response.code != "200"
+          puts "Error checking for assignments: #{response.body}"
           send_event("error")
           return
         end
