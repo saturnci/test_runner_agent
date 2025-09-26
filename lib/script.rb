@@ -85,6 +85,7 @@ def execute_script
   build_args << "--build-arg BUNDLE_GEMFILE=#{ENV["BUNDLE_GEMFILE"]}" if ENV["BUNDLE_GEMFILE"]
   build_args << "--build-arg BUNDLE_GEMS__CONTRIBSYS__COM=#{ENV["BUNDLE_GEMS__CONTRIBSYS__COM"]}" if ENV["BUNDLE_GEMS__CONTRIBSYS__COM"]
   build_args << "--build-arg BUNDLE_GITHUB__COM=#{ENV["BUNDLE_GITHUB__COM"]}" if ENV["BUNDLE_GITHUB__COM"]
+  build_args << "--build-arg GITHUB_TOKEN=#{github_token}"
 
   system("docker buildx create --name saturnci-builder --driver docker-container --use")
 
