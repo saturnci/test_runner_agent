@@ -32,7 +32,13 @@ def execute_script
   client.post("runs/#{ENV["RUN_ID"]}/run_events", type: "runner_ready")
 
   FileUtils.rm_rf(PROJECT_DIR) if Dir.exist?(PROJECT_DIR)
-  clone_repo(client: client, source: ENV["GITHUB_REPO_FULL_NAME"], destination: PROJECT_DIR)
+
+  github_token = client.post("github_tokens", github_installation_id: ENV["GITHUB_INSTALLATION_ID"]).body
+  clone_repo(
+    github_token: github_token,
+    source: ENV["GITHUB_REPO_FULL_NAME"],
+    destination: PROJECT_DIR
+  )
 
   FileUtils.mkdir_p(PROJECT_DIR)
   Dir.chdir(PROJECT_DIR)
@@ -178,13 +184,12 @@ ensure
   client.delete("runs/#{ENV["RUN_ID"]}/runner")
 end
 
-def clone_repo(client:, source:, destination:)
+def clone_repo(github_token:, source:, destination:)
   require "open3"
   puts "Cloning #{source} into #{destination}..."
   puts "GitHub installation ID: #{ENV["GITHUB_INSTALLATION_ID"]}"
-  token = client.post("github_tokens", github_installation_id: ENV["GITHUB_INSTALLATION_ID"]).body
-  puts "GitHub token: #{token}"
-  clone_command = "git clone --recurse-submodules https://x-access-token:#{token}@github.com/#{source} #{destination}"
+  puts "GitHub token: #{github_token}"
+  clone_command = "git clone --recurse-submodules https://x-access-token:#{github_token}@github.com/#{source} #{destination}"
   puts clone_command
   _, stderr, status = Open3.capture3(clone_command)
   puts status.success? ? "clone successful" : "clone failed: #{stderr}"
