@@ -48,9 +48,8 @@ def execute_script
   puts "Checking out commit #{ENV["COMMIT_HASH"]}"
   system("git checkout #{ENV["COMMIT_HASH"]}")
 
-  puts "Sending dry run example count to API"
   endpoint = "test_suite_runs/#{ENV["TEST_SUITE_RUN_ID"]}"
-  puts "Endpoint: #{endpoint}"
+  puts "Sending dry run example count to API (#{endpoint})"
   response = client.patch(endpoint, { dry_run_example_count: 100 })
   puts "Dry run example count response code: #{response.code}"
 
