@@ -48,14 +48,6 @@ def execute_script
   puts "Checking out commit #{ENV["COMMIT_HASH"]}"
   system("git checkout #{ENV["COMMIT_HASH"]}")
 
-  dry_run_example_count_endpoint = "test_suite_runs/#{ENV["TEST_SUITE_RUN_ID"]}"
-  dry_run_output = `bundle exec rspec --dry-run 2>&1 | tail -2 | head -1`
-  puts "Dry run output: #{dry_run_output}"
-  dry_run_example_count = dry_run_output.match(/(\d+) example/)[1].to_i
-  puts "Sending dry run example count (#{dry_run_example_count}) to API (#{dry_run_example_count_endpoint})"
-  response = client.patch(dry_run_example_count_endpoint, { dry_run_example_count: dry_run_example_count })
-  puts "Dry run example count response code: #{response.code}"
-
   docker_registry_cache = SaturnCIRunnerAPI::DockerRegistryCache.new(
     username: ENV["DOCKER_REGISTRY_CACHE_USERNAME"],
     password: ENV["DOCKER_REGISTRY_CACHE_PASSWORD"],
@@ -130,6 +122,17 @@ def execute_script
   else
     exit 1
   end
+
+  puts "Getting expected test count with RSpec dry-run"
+  dry_run_command = "docker compose -f .saturnci/docker-compose.yml run saturn_test_app bundle exec rspec --dry-run"
+  dry_run_output = `#{dry_run_command} 2>&1 | tail -2 | head -1`
+  expected_count = dry_run_output.match(/(\d+) example/)[1].to_i
+  puts "Expected test count: #{expected_count}"
+
+  endpoint = "test_suite_runs/#{ENV["TEST_SUITE_RUN_ID"]}"
+  puts "Sending dry run example count to API (#{endpoint})"
+  response = client.patch(endpoint, { dry_run_example_count: expected_count })
+  puts "Dry run example count response code: #{response.code}"
 
   puts "Starting to stream test output"
   File.open(RSPEC_DOCUMENTATION_OUTPUT_FILENAME, 'w') {}
