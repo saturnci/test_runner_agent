@@ -94,5 +94,29 @@ describe SaturnCIRunnerAPI::TestSuiteCommand do
         expect { command.test_filenames_string(test_filenames) }.to raise_error(StandardError)
       end
     end
+
+    context "chunking bug reproduction: 77 files with 4 runners" do
+      it "distributes all 77 files across 4 runners without losing any" do
+        test_filenames = (1..77).map { |i| "spec/test_#{i}_spec.rb" }
+
+        all_distributed_files = []
+
+        (1..4).each do |run_order_index|
+          command = SaturnCIRunnerAPI::TestSuiteCommand.new(
+            docker_registry_cache_image_url: "test.com/image:123",
+            number_of_concurrent_runs: "4",
+            run_order_index: run_order_index.to_s,
+            rspec_seed: "999",
+            rspec_documentation_output_filename: "tmp/test_output.txt"
+          )
+
+          files_string = command.test_filenames_string(test_filenames)
+          files_array = files_string.split(' ')
+          all_distributed_files.concat(files_array)
+        end
+
+        expect(all_distributed_files.length).to eq(77)
+      end
+    end
   end
 end

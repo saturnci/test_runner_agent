@@ -20,8 +20,19 @@ module SaturnCIRunnerAPI
 
     def test_filenames_string(test_filenames)
       raise StandardError, "No test files found matching #{TEST_FILE_GLOB}" if test_filenames.empty?
-      slice_size = (test_filenames.size / @number_of_concurrent_runs).to_f.ceil
-      chunks = test_filenames.each_slice(slice_size).to_a
+
+      base_size = test_filenames.size / @number_of_concurrent_runs
+      remainder = test_filenames.size % @number_of_concurrent_runs
+
+      chunks = []
+      start_index = 0
+
+      @number_of_concurrent_runs.times do |i|
+        chunk_size = base_size + (i < remainder ? 1 : 0)
+        chunks << test_filenames[start_index, chunk_size]
+        start_index += chunk_size
+      end
+
       selected_test_filenames = chunks[@run_order_index - 1]
       selected_test_filenames.join(" ")
     end
