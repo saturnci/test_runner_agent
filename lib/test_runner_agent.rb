@@ -48,11 +48,6 @@ class TestRunnerAgent
   end
 
   def execute(assignment)
-    # as a test, write to a file called /tmp/test.txt
-    File.open("/tmp/test.txt", "w") do |file|
-      file.puts "This is a test"
-    end
-
     require_relative "./script"
 
     ENV["HOST"] = @credential.host
