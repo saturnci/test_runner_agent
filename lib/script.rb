@@ -49,9 +49,9 @@ def execute_script
   system("git checkout #{ENV["COMMIT_HASH"]}")
 
   puts "Sending dry run example count to API"
-  response = client.patch("test_suite_runs/#{ENV["TEST_SUITE_RUN_ID"]}", {
-    dry_run_example_count: 100
-  })
+  endpoint = "test_suite_runs/#{ENV["TEST_SUITE_RUN_ID"]}"
+  puts "Endpoint: #{endpoint}"
+  response = client.patch(endpoint, { dry_run_example_count: 100 })
   puts "Dry run example count response code: #{response.code}"
 
   docker_registry_cache = SaturnCIRunnerAPI::DockerRegistryCache.new(
