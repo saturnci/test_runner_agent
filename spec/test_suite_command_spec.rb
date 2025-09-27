@@ -95,7 +95,7 @@ describe SaturnCIRunnerAPI::TestSuiteCommand do
       end
     end
 
-    context "chunking bug reproduction: 77 files with 4 runners" do
+    describe "chunking" do
       let!(:default_params) do
         {
           docker_registry_cache_image_url: "test.com/image:123",
@@ -121,6 +121,20 @@ describe SaturnCIRunnerAPI::TestSuiteCommand do
         all_distributed_files = files1 + files2 + files3 + files4
 
         expect(all_distributed_files.length).to eq(77)
+      end
+
+      it "distributes all 20 files across 2 runners without losing any" do
+        test_filenames = (1..20).map { |i| "spec/test_#{i}_spec.rb" }
+
+        command1 = SaturnCIRunnerAPI::TestSuiteCommand.new(**default_params.merge(number_of_concurrent_runs: "2", run_order_index: "1"))
+        command2 = SaturnCIRunnerAPI::TestSuiteCommand.new(**default_params.merge(number_of_concurrent_runs: "2", run_order_index: "2"))
+
+        files1 = command1.test_filenames_string(test_filenames).split(' ')
+        files2 = command2.test_filenames_string(test_filenames).split(' ')
+
+        all_distributed_files = files1 + files2
+
+        expect(all_distributed_files.length).to eq(20)
       end
     end
   end
