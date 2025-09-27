@@ -96,24 +96,29 @@ describe SaturnCIRunnerAPI::TestSuiteCommand do
     end
 
     context "chunking bug reproduction: 77 files with 4 runners" do
+      let!(:default_params) do
+        {
+          docker_registry_cache_image_url: "test.com/image:123",
+          number_of_concurrent_runs: "4",
+          rspec_seed: "999",
+          rspec_documentation_output_filename: "tmp/test_output.txt"
+        }
+      end
+
       it "distributes all 77 files across 4 runners without losing any" do
         test_filenames = (1..77).map { |i| "spec/test_#{i}_spec.rb" }
 
-        all_distributed_files = []
+        command1 = SaturnCIRunnerAPI::TestSuiteCommand.new(**default_params.merge(run_order_index: "1"))
+        command2 = SaturnCIRunnerAPI::TestSuiteCommand.new(**default_params.merge(run_order_index: "2"))
+        command3 = SaturnCIRunnerAPI::TestSuiteCommand.new(**default_params.merge(run_order_index: "3"))
+        command4 = SaturnCIRunnerAPI::TestSuiteCommand.new(**default_params.merge(run_order_index: "4"))
 
-        (1..4).each do |run_order_index|
-          command = SaturnCIRunnerAPI::TestSuiteCommand.new(
-            docker_registry_cache_image_url: "test.com/image:123",
-            number_of_concurrent_runs: "4",
-            run_order_index: run_order_index.to_s,
-            rspec_seed: "999",
-            rspec_documentation_output_filename: "tmp/test_output.txt"
-          )
+        files1 = command1.test_filenames_string(test_filenames).split(' ')
+        files2 = command2.test_filenames_string(test_filenames).split(' ')
+        files3 = command3.test_filenames_string(test_filenames).split(' ')
+        files4 = command4.test_filenames_string(test_filenames).split(' ')
 
-          files_string = command.test_filenames_string(test_filenames)
-          files_array = files_string.split(' ')
-          all_distributed_files.concat(files_array)
-        end
+        all_distributed_files = files1 + files2 + files3 + files4
 
         expect(all_distributed_files.length).to eq(77)
       end
