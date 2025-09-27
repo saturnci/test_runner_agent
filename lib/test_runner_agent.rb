@@ -80,10 +80,35 @@ class TestRunnerAgent
       puts "Failed: File #{ENV["SOURCE_ENV_FILE_PATH"]} does not exist"
     end
 
+    wait_for_network_ready
     execute_script
   end
 
   private
+
+  def wait_for_network_ready
+    require 'socket'
+
+    max_attempts = 10
+    attempts = 0
+    host = @credential.host.gsub(/^https?:\/\//, '') # Remove protocol if present
+
+    loop do
+      attempts += 1
+      puts "Checking network readiness... (attempt #{attempts}/#{max_attempts})"
+
+      begin
+        TCPSocket.new(host, 443).close
+        puts "Network ready after #{attempts} attempts"
+        break
+      rescue => e
+        if attempts >= max_attempts
+          raise "Network not ready after #{max_attempts} attempts: #{e.message}"
+        end
+        sleep(1)
+      end
+    end
+  end
 
   def send_event(type)
     puts "Sending event: #{type}"
