@@ -17,6 +17,7 @@ module SaturnCIRunnerAPI
       http.request(request)
     rescue => e
       puts "Request failed at #{Time.now}: #{e.message}"
+      puts "Resolv.conf: #{File.read('/etc/resolv.conf') rescue 'FILE NOT FOUND'}"
       raise e
     end
 
