@@ -26,7 +26,7 @@ def execute_script
   )
   system_log_stream.start
 
-  puts "Test runner agent version: #{`git rev-parse HEAD`.strip}"
+  puts "Test runner agent version: #{`git show -s --format=%ci HEAD`.strip} #{`git rev-parse HEAD`.strip}"
   puts "Runner ready"
   client.post("runs/#{ENV["RUN_ID"]}/run_events", type: "runner_ready")
 
