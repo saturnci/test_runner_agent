@@ -14,6 +14,10 @@ module SaturnCIRunnerAPI
       Request.new(@host, :delete, endpoint).execute
     end
 
+    def patch(endpoint, payload = nil)
+      Request.new(@host, :patch, endpoint, payload).execute
+    end
+
     def debug(message)
       post("debug_messages", message)
     end

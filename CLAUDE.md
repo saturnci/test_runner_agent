@@ -1,5 +1,10 @@
 # CLAUDE.md
 
+## Overview
+
+This project is the test runner agent for SaturnCI, a continuous integration platform for Ruby on Rails projects.
+See [SaturnCI](https://www.saturnci.com) for more information.
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Common Development Commands

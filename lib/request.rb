@@ -23,6 +23,8 @@ module SaturnCIRunnerAPI
         r = Net::HTTP::Post.new(url)
       when :delete
         r = Net::HTTP::Delete.new(url)
+      when :patch
+        r = Net::HTTP::Patch.new(url)
       end
 
       r.basic_auth(ENV["USER_ID"], ENV["USER_API_TOKEN"])
