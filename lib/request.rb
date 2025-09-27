@@ -15,6 +15,9 @@ module SaturnCIRunnerAPI
       http = Net::HTTP.new(url.host, url.port)
       http.use_ssl = true if url.scheme == "https"
       http.request(request)
+    rescue => e
+      puts "Request failed at #{Time.now}: #{e.message}"
+      raise e
     end
 
     def request
