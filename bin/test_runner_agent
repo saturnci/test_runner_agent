@@ -2,6 +2,7 @@
 
 require_relative "../lib/test_runner_agent"
 require_relative "../lib/credential"
+require_relative "../lib/current_version"
 
 test_runner_agent = TestRunnerAgent.new(
   test_runner_id: ENV["TEST_RUNNER_ID"],
@@ -24,9 +25,9 @@ end
 
 puts "Received assignment for run #{assignment["run_id"]}"
 
-puts "Current agent version: #{`git show -s --format=%ci HEAD`.strip} #{`git rev-parse HEAD`.strip}"
+puts "Current agent version: #{current_version}"
 puts "Performing git pull to ensure latest agent version present..."
 system("git pull")
-puts "Current agent version: #{`git show -s --format=%ci HEAD`.strip} #{`git rev-parse HEAD`.strip}"
+puts "Current agent version: #{current_version}"
 
 test_runner_agent.execute(assignment)

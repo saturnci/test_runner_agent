@@ -13,7 +13,7 @@ describe SaturnCIRunnerAPI::TestSuiteCommand do
     end
 
     before do
-      allow(command).to receive(:test_files_string).and_return("spec/models/github_token_spec.rb spec/rebuilds_spec.rb")
+      allow(command).to receive(:test_filenames_string).and_return("spec/models/github_token_spec.rb spec/rebuilds_spec.rb")
     end
 
     it "returns a command" do
@@ -35,7 +35,7 @@ describe SaturnCIRunnerAPI::TestSuiteCommand do
     end
 
     before do
-      allow(command).to receive(:test_files_string).and_return("spec/models/github_token_spec.rb spec/rebuilds_spec.rb")
+      allow(command).to receive(:test_filenames_string).and_return("spec/models/github_token_spec.rb spec/rebuilds_spec.rb")
     end
 
     it "returns a command" do
@@ -43,7 +43,7 @@ describe SaturnCIRunnerAPI::TestSuiteCommand do
     end
   end
 
-  describe "test_files_string" do
+  describe "test_filenames_string" do
     context "concurrency 2, order index 1" do
       let!(:command) do
         SaturnCIRunnerAPI::TestSuiteCommand.new(
@@ -56,8 +56,8 @@ describe SaturnCIRunnerAPI::TestSuiteCommand do
       end
 
       it "includes the first two test files" do
-        test_files = ["spec/models/github_token_spec.rb", "spec/rebuilds_spec.rb", "spec/sign_up_spec.rb", "spec/test_spec.rb"]
-        expect(command.test_files_string(test_files)).to eq("spec/models/github_token_spec.rb spec/rebuilds_spec.rb")
+        test_filenames = ["spec/models/github_token_spec.rb", "spec/rebuilds_spec.rb", "spec/sign_up_spec.rb", "spec/test_spec.rb"]
+        expect(command.test_filenames_string(test_filenames)).to eq("spec/models/github_token_spec.rb spec/rebuilds_spec.rb")
       end
     end
 
@@ -73,8 +73,8 @@ describe SaturnCIRunnerAPI::TestSuiteCommand do
       end
 
       it "includes the second two test files" do
-        test_files = ["spec/models/github_token_spec.rb", "spec/rebuilds_spec.rb", "spec/sign_up_spec.rb", "spec/test_spec.rb"]
-        expect(command.test_files_string(test_files)).to eq("spec/sign_up_spec.rb spec/test_spec.rb")
+        test_filenames = ["spec/models/github_token_spec.rb", "spec/rebuilds_spec.rb", "spec/sign_up_spec.rb", "spec/test_spec.rb"]
+        expect(command.test_filenames_string(test_filenames)).to eq("spec/sign_up_spec.rb spec/test_spec.rb")
       end
     end
 
@@ -90,8 +90,8 @@ describe SaturnCIRunnerAPI::TestSuiteCommand do
       end
 
       it "raises an exception" do
-        test_files = []
-        expect { command.test_files_string(test_files) }.to raise_error(StandardError)
+        test_filenames = []
+        expect { command.test_filenames_string(test_filenames) }.to raise_error(StandardError)
       end
     end
   end

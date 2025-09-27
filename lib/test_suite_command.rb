@@ -18,10 +18,10 @@ module SaturnCIRunnerAPI
       "docker compose -f .saturnci/docker-compose.yml run saturn_test_app #{rspec_command}"
     end
 
-    def test_files_string(test_files)
-      raise StandardError, "No test files found matching #{TEST_FILE_GLOB}" if test_files.empty?
-      slice_size = test_files.size / @number_of_concurrent_runs
-      chunks = test_files.each_slice(slice_size.to_f.ceil).to_a
+    def test_filenames_string(test_filenames)
+      raise StandardError, "No test files found matching #{TEST_FILE_GLOB}" if test_filenames.empty?
+      slice_size = (test_filenames.size / @number_of_concurrent_runs).to_f.ceil
+      chunks = test_filenames.each_slice(slice_size).to_a
       selected_tests = chunks[@run_order_index - 1]
       selected_tests.join(" ")
     end
@@ -35,11 +35,11 @@ module SaturnCIRunnerAPI
         "--format=documentation",
         "--format json --out tmp/json_output.json",
         "--order rand:#{@rspec_seed}",
-        test_files_string(test_files)
+        test_filenames_string(test_filenames)
       ].join(' ')
     end
 
-    def test_files
+    def test_filenames
       Dir.glob(TEST_FILE_GLOB).shuffle(random: Random.new(@rspec_seed))
     end
   end
