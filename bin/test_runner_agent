@@ -23,4 +23,6 @@ if assignment.nil?
 end
 
 puts "Received assignment for run #{assignment["run_id"]}"
+puts "Updating agent code..."
+system("git pull")
 test_runner_agent.execute(assignment)
