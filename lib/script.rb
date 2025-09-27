@@ -48,9 +48,11 @@ def execute_script
   puts "Checking out commit #{ENV["COMMIT_HASH"]}"
   system("git checkout #{ENV["COMMIT_HASH"]}")
 
-  endpoint = "test_suite_runs/#{ENV["TEST_SUITE_RUN_ID"]}"
-  puts "Sending dry run example count to API (#{endpoint})"
-  response = client.patch(endpoint, { dry_run_example_count: 100 })
+  dry_run_example_count_endpoint = "test_suite_runs/#{ENV["TEST_SUITE_RUN_ID"]}"
+  dry_run_output = `bundle exec rspec --dry-run 2>&1 | tail -2 | head -1`
+  dry_run_example_count = dry_run_output.match(/(\d+) example/)[1].to_i
+  puts "Sending dry run example count (#{dry_run_example_count}) to API (#{dry_run_example_count_endpoint})"
+  response = client.patch(dry_run_example_count_endpoint, { dry_run_example_count: dry_run_example_count })
   puts "Dry run example count response code: #{response.code}"
 
   docker_registry_cache = SaturnCIRunnerAPI::DockerRegistryCache.new(
