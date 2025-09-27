@@ -50,6 +50,7 @@ def execute_script
 
   dry_run_example_count_endpoint = "test_suite_runs/#{ENV["TEST_SUITE_RUN_ID"]}"
   dry_run_output = `bundle exec rspec --dry-run 2>&1 | tail -2 | head -1`
+  puts "Dry run output: #{dry_run_output}"
   dry_run_example_count = dry_run_output.match(/(\d+) example/)[1].to_i
   puts "Sending dry run example count (#{dry_run_example_count}) to API (#{dry_run_example_count_endpoint})"
   response = client.patch(dry_run_example_count_endpoint, { dry_run_example_count: dry_run_example_count })
