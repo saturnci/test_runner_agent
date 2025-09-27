@@ -22,8 +22,8 @@ module SaturnCIRunnerAPI
       raise StandardError, "No test files found matching #{TEST_FILE_GLOB}" if test_filenames.empty?
       slice_size = (test_filenames.size / @number_of_concurrent_runs).to_f.ceil
       chunks = test_filenames.each_slice(slice_size).to_a
-      selected_tests = chunks[@run_order_index - 1]
-      selected_tests.join(" ")
+      selected_test_filenames = chunks[@run_order_index - 1]
+      selected_test_filenames.join(" ")
     end
 
     private
