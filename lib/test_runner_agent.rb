@@ -59,6 +59,7 @@ class TestRunnerAgent
     ENV["USER_ID"] = @credential.user_id
     ENV["USER_API_TOKEN"] = @credential.api_token
 
+    ENV["TEST_SUITE_RUN_ID"] = assignment["test_suite_run_id"]
     ENV["RUN_ID"] = assignment["run_id"]
     ENV["RUN_ORDER_INDEX"] = assignment["run_order_index"].to_s
     ENV["PROJECT_NAME"] = assignment["project_name"]
