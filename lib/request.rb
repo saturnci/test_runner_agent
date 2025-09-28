@@ -33,6 +33,15 @@ module SaturnCIRunnerAPI
 
       puts "NSSwitch hosts config: #{File.read('/etc/nsswitch.conf').lines.grep(/^hosts:/).first&.strip || 'NOT FOUND'}"
 
+      # Test Ruby's direct DNS resolution (bypasses NSS)
+      begin
+        require 'resolv'
+        ip = Resolv.getaddress('app.saturnci.com')
+        puts "Ruby direct DNS: #{ip}"
+      rescue => dns_error
+        puts "Ruby direct DNS: FAILED (#{dns_error.message})"
+      end
+
       raise e
     end
 
