@@ -17,7 +17,13 @@ TEST_RESULTS_FILENAME = "tmp/test_results.txt"
 def wait_for_dns_resolution
   loop do
     begin
-      Socket.getaddrinfo(ENV["HOST"].gsub(/^https?:\/\//, ''), 443)
+      # Test the same resolution path that Net::HTTP uses
+      host = ENV["HOST"].gsub(/^https?:\/\//, '')
+      http = Net::HTTP.new(host, 443)
+      http.use_ssl = true
+      http.open_timeout = 5
+      http.start { }  # Just establish connection, don't make request
+      http.finish if http.started?
       puts "DNS resolution ready"
       break
     rescue => e
