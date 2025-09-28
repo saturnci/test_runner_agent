@@ -31,6 +31,8 @@ module SaturnCIRunnerAPI
         puts "Local DNS resolver: UNKNOWN STATUS (#{dig_result})"
       end
 
+      puts "NSSwitch hosts config: #{File.read('/etc/nsswitch.conf').lines.grep(/^hosts:/).first&.strip || 'NOT FOUND'}"
+
       raise e
     end
 
