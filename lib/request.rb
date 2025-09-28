@@ -18,6 +18,19 @@ module SaturnCIRunnerAPI
     rescue => e
       puts "Request failed at #{Time.now}: #{e.message}"
       puts "Resolv.conf: #{File.read('/etc/resolv.conf') rescue 'FILE NOT FOUND'}"
+
+      # Test if local DNS resolver works
+      dig_result = `dig @127.0.0.53 app.saturnci.com +short +time=1 2>&1`.strip
+      if dig_result.include?("connection timed out") || dig_result.include?("no servers could be reached")
+        puts "Local DNS resolver: NOT RESPONDING"
+      elsif dig_result.match(/^\d+\.\d+\.\d+\.\d+/)
+        puts "Local DNS resolver: WORKING (resolved to #{dig_result})"
+      elsif dig_result.include?("SERVFAIL") || dig_result.include?("NXDOMAIN")
+        puts "Local DNS resolver: RESPONDING but cannot resolve domain"
+      else
+        puts "Local DNS resolver: UNKNOWN STATUS (#{dig_result})"
+      end
+
       raise e
     end
 
