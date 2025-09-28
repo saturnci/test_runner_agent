@@ -14,6 +14,19 @@ PROJECT_DIR = "/project"
 RSPEC_DOCUMENTATION_OUTPUT_FILENAME = "tmp/rspec_documentation_output.txt"
 TEST_RESULTS_FILENAME = "tmp/test_results.txt"
 
+def wait_for_dns_resolution
+  loop do
+    begin
+      Socket.getaddrinfo(ENV["HOST"].gsub(/^https?:\/\//, ''), 443)
+      puts "DNS resolution ready"
+      break
+    rescue => e
+      puts "Waiting for DNS resolution... (#{e.message})"
+      sleep 1
+    end
+  end
+end
+
 def execute_script
   $stdout.sync = true
 
@@ -28,6 +41,7 @@ def execute_script
 
   puts "Test runner agent version: #{`git show -s --format=%ci HEAD`.strip} #{`git rev-parse HEAD`.strip}"
   puts "Runner ready"
+  wait_for_dns_resolution
   client.post("runs/#{ENV["RUN_ID"]}/run_events", type: "runner_ready")
 
   FileUtils.rm_rf(PROJECT_DIR) if Dir.exist?(PROJECT_DIR)
