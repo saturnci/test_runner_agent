@@ -7,6 +7,10 @@ See [SaturnCI](https://www.saturnci.com) for more information.
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Important Instructions
+
+Never commit or push without my permission.
+
 ## Common Development Commands
 
 ### Testing
