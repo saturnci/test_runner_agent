@@ -11,6 +11,7 @@ require_relative "./test_suite_command"
 require_relative "./screenshot_tar_file"
 
 PROJECT_DIR = "/project"
+DOCKER_SERVICE_NAME = "saturn_test_app"
 RSPEC_DOCUMENTATION_OUTPUT_FILENAME = "tmp/rspec_documentation_output.txt"
 TEST_RESULTS_FILENAME = "tmp/test_results.txt"
 
@@ -132,7 +133,7 @@ def execute_script
   puts "Environment variables set in this shell:"
   system("env | awk -F= '{print $1}' | sort")
 
-  pre_script_command = "docker compose -f .saturnci/docker-compose.yml run saturn_test_app ./.saturnci/pre.sh"
+  pre_script_command = "docker compose -f .saturnci/docker-compose.yml run #{DOCKER_SERVICE_NAME} ./.saturnci/pre.sh"
   puts "pre.sh command: \"#{pre_script_command}\""
   system(pre_script_command)
   puts "pre.sh exit code: #{$?.exitstatus}"
@@ -144,7 +145,7 @@ def execute_script
   end
 
   puts "Getting expected test count with RSpec dry-run"
-  dry_run_command = "docker compose -f .saturnci/docker-compose.yml run saturn_test_app bundle exec rspec --dry-run"
+  dry_run_command = "docker compose -f .saturnci/docker-compose.yml run #{DOCKER_SERVICE_NAME} bundle exec rspec --dry-run"
   dry_run_output = `#{dry_run_command} 2>&1 | tail -2 | head -1`
   expected_count = dry_run_output.match(/(\d+) example/)[1].to_i
   puts "Expected test count: #{expected_count}"

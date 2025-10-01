@@ -1,6 +1,7 @@
 module SaturnCIRunnerAPI
   class TestSuiteCommand
     TEST_FILE_GLOB = "./spec/**/*_spec.rb"
+    DOCKER_SERVICE_NAME = "saturn_test_app"
 
     def initialize(docker_registry_cache_image_url:, number_of_concurrent_runs:, run_order_index:, rspec_seed:, rspec_documentation_output_filename:)
       @docker_registry_cache_image_url = docker_registry_cache_image_url
@@ -15,7 +16,7 @@ module SaturnCIRunnerAPI
     end
 
     def docker_compose_command
-      "docker compose -f .saturnci/docker-compose.yml run saturn_test_app #{rspec_command}"
+      "docker compose -f .saturnci/docker-compose.yml run #{DOCKER_SERVICE_NAME} #{rspec_command}"
     end
 
     def test_filenames_string(test_filenames)
