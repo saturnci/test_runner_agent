@@ -148,7 +148,14 @@ def execute_script
   dry_run_command = "docker compose -f .saturnci/docker-compose.yml run #{DOCKER_SERVICE_NAME} bundle exec rspec --dry-run"
   puts "Running dry run command: #{dry_run_command}"
   dry_run_output = `#{dry_run_command} 2>&1 | tail -2 | head -1`
+  dry_run_exit_code = $?.exitstatus
   puts "Dry run command output: #{dry_run_output}"
+  puts "Dry run exit code: #{dry_run_exit_code}"
+
+  if dry_run_exit_code != 0
+    raise "RSpec dry-run failed with exit code #{dry_run_exit_code}"
+  end
+
   expected_count = dry_run_output.match(/(\d+) example/)[1].to_i
   puts "Expected test count: #{expected_count}"
 
