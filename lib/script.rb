@@ -162,7 +162,7 @@ def execute_script
   puts "--- End of full dry run output ---"
 
   # Extract the summary line
-  dry_run_output = full_dry_run_output.split("\n")[-2]
+  dry_run_output = full_dry_run_output.split("\n")[-1]
   dry_run_exit_code = $?.exitstatus
   puts "Dry run command output: #{dry_run_output}"
   puts "Dry run exit code: #{dry_run_exit_code}"
