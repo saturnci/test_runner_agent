@@ -4,7 +4,7 @@ Diagnose the described problem.
 
 Remember: a diagnosis is an explanation.
 
-Come up with some hypotheses as to what the explanation could be.
+Come up with some hypotheses as to what the explanation could be. Ask me for hypotheses too.
 Subject your hypotheses to skeptical scrutiny and criticism.
 Try as hard as you can to disprove each hypothesis before considering it to be plausible.
 For each hypothesis, you may need more information and you may not.
