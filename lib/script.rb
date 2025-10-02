@@ -146,7 +146,9 @@ def execute_script
 
   puts "Getting expected test count with RSpec dry-run"
   dry_run_command = "docker compose -f .saturnci/docker-compose.yml run #{DOCKER_SERVICE_NAME} bundle exec rspec --dry-run"
+  puts "Running dry run command: #{dry_run_command}"
   dry_run_output = `#{dry_run_command} 2>&1 | tail -2 | head -1`
+  puts "Dry run command output: #{dry_run_output}"
   expected_count = dry_run_output.match(/(\d+) example/)[1].to_i
   puts "Expected test count: #{expected_count}"
 
