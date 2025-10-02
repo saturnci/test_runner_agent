@@ -145,9 +145,24 @@ def execute_script
   end
 
   puts "Getting expected test count with RSpec dry-run"
+
+  # Diagnostic: Show what spec files exist
+  puts "Checking for spec files in repository..."
+  spec_files = Dir.glob("./spec/**/*_spec.rb")
+  puts "Found #{spec_files.length} spec files:"
+  spec_files.each { |f| puts "  #{f}" }
+
   dry_run_command = "docker compose -f .saturnci/docker-compose.yml run #{DOCKER_SERVICE_NAME} bundle exec rspec --dry-run"
   puts "Running dry run command: #{dry_run_command}"
-  dry_run_output = `#{dry_run_command} 2>&1 | tail -2 | head -1`
+
+  # Capture full output for debugging
+  full_dry_run_output = `#{dry_run_command} 2>&1`
+  puts "Full dry run output:"
+  puts full_dry_run_output
+  puts "--- End of full dry run output ---"
+
+  # Extract the summary line
+  dry_run_output = full_dry_run_output.split("\n")[-2]
   dry_run_exit_code = $?.exitstatus
   puts "Dry run command output: #{dry_run_output}"
   puts "Dry run exit code: #{dry_run_exit_code}"
