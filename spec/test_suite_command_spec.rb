@@ -8,7 +8,8 @@ describe SaturnCIRunnerAPI::TestSuiteCommand do
         number_of_concurrent_runs: "1",
         run_order_index: "1",
         rspec_seed: "999",
-        rspec_documentation_output_filename: "tmp/test_output.txt"
+        rspec_documentation_output_filename: "tmp/test_output.txt",
+        docker_service_name: "saturn_test_app"
       )
     end
 
@@ -30,7 +31,8 @@ describe SaturnCIRunnerAPI::TestSuiteCommand do
         number_of_concurrent_runs: "1",
         run_order_index: "1",
         rspec_seed: "999",
-        rspec_documentation_output_filename: "tmp/test_output.txt"
+        rspec_documentation_output_filename: "tmp/test_output.txt",
+        docker_service_name: "saturn_test_app"
       )
     end
 
@@ -51,7 +53,8 @@ describe SaturnCIRunnerAPI::TestSuiteCommand do
           number_of_concurrent_runs: "2",
           run_order_index: "1",
           rspec_seed: "999",
-          rspec_documentation_output_filename: "tmp/test_output.txt"
+          rspec_documentation_output_filename: "tmp/test_output.txt",
+          docker_service_name: "saturn_test_app"
         )
       end
 
@@ -68,7 +71,8 @@ describe SaturnCIRunnerAPI::TestSuiteCommand do
           number_of_concurrent_runs: "2",
           run_order_index: "2",
           rspec_seed: "999",
-          rspec_documentation_output_filename: "tmp/test_output.txt"
+          rspec_documentation_output_filename: "tmp/test_output.txt",
+          docker_service_name: "saturn_test_app"
         )
       end
 
@@ -85,7 +89,8 @@ describe SaturnCIRunnerAPI::TestSuiteCommand do
           number_of_concurrent_runs: "2",
           run_order_index: "2",
           rspec_seed: "999",
-          rspec_documentation_output_filename: "tmp/test_output.txt"
+          rspec_documentation_output_filename: "tmp/test_output.txt",
+          docker_service_name: "saturn_test_app"
         )
       end
 
@@ -101,7 +106,8 @@ describe SaturnCIRunnerAPI::TestSuiteCommand do
           docker_registry_cache_image_url: "test.com/image:123",
           number_of_concurrent_runs: "4",
           rspec_seed: "999",
-          rspec_documentation_output_filename: "tmp/test_output.txt"
+          rspec_documentation_output_filename: "tmp/test_output.txt",
+          docker_service_name: "saturn_test_app"
         }
       end
 

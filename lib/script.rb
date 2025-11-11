@@ -201,7 +201,8 @@ def execute_script
     number_of_concurrent_runs: ENV["NUMBER_OF_CONCURRENT_RUNS"],
     run_order_index: ENV["RUN_ORDER_INDEX"],
     rspec_seed: ENV["RSPEC_SEED"],
-    rspec_documentation_output_filename: RSPEC_DOCUMENTATION_OUTPUT_FILENAME
+    rspec_documentation_output_filename: RSPEC_DOCUMENTATION_OUTPUT_FILENAME,
+    docker_service_name: DOCKER_SERVICE_NAME
   ).to_s
   puts "Test run command: #{test_suite_command}"
 
