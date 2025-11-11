@@ -5,6 +5,7 @@ require "fileutils"
 
 require_relative "./client"
 require_relative "./stream"
+require_relative "./dry_run"
 require_relative "./file_content_request"
 require_relative "./docker_registry_cache"
 require_relative "./test_suite_command"
