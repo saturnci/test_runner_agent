@@ -144,39 +144,19 @@ def execute_script
     exit 1
   end
 
-  puts "Getting expected test count with RSpec dry-run"
-
-  # Diagnostic: Show what spec files exist
   puts "Checking for spec files in repository..."
   spec_files = Dir.glob("./spec/**/*_spec.rb")
   puts "Found #{spec_files.length} spec files:"
   spec_files.each { |f| puts "  #{f}" }
 
-  dry_run_command = "docker compose -f .saturnci/docker-compose.yml run #{DOCKER_SERVICE_NAME} bundle exec rspec --dry-run"
-  puts "Running dry run command: #{dry_run_command}"
-
-  # Capture full output for debugging
-  full_dry_run_output = `#{dry_run_command} 2>&1`
-  puts "Full dry run output:"
-  puts full_dry_run_output
-  puts "--- End of full dry run output ---"
-
-  # Extract the summary line
-  dry_run_output = full_dry_run_output.split("\n")[-1]
-  dry_run_exit_code = $?.exitstatus
-  puts "Dry run command output: #{dry_run_output}"
-  puts "Dry run exit code: #{dry_run_exit_code}"
-
-  if dry_run_exit_code != 0
-    raise "RSpec dry-run failed with exit code #{dry_run_exit_code}"
-  end
-
-  expected_count = dry_run_output.match(/(\d+) example/)[1].to_i
-  puts "Expected test count: #{expected_count}"
+  puts "Getting expected test count with RSpec dry-run"
+  dry_run = DryRun.new(docker_service_name: DOCKER_SERVICE_NAME)
+  puts "Running dry run command: #{dry_run.command}"
+  puts "Expected test count: #{dry_run.expected_count}"
 
   endpoint = "test_suite_runs/#{ENV["TEST_SUITE_RUN_ID"]}"
   puts "Sending dry run example count to API (#{endpoint})"
-  response = client.patch(endpoint, { dry_run_example_count: expected_count })
+  response = client.patch(endpoint, { dry_run_example_count: dry_run.expected_count })
   puts "Dry run example count response code: #{response.code}"
 
   puts "Starting to stream test output"
