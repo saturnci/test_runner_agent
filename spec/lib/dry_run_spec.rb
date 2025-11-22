@@ -40,6 +40,23 @@ describe DryRun do
     it "is 16" do
       expect(dry_run.expected_count).to eq(16)
     end
+
+    context "when last line contains randomization message" do
+      let!(:command_output) do
+        <<~OUTPUT
+        ................
+
+        Finished in 0.07641 seconds (files took 5.28 seconds to load)
+        129 examples, 0 failures
+
+        Randomized with seed 55376
+        OUTPUT
+      end
+
+      it "extracts count from middle line" do
+        expect(dry_run.expected_count).to eq(129)
+      end
+    end
   end
 
   context "exit code is not 0" do
