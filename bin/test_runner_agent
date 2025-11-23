@@ -8,7 +8,7 @@ test_runner_agent = TestRunnerAgent.new(
   test_runner_id: ENV["TEST_RUNNER_ID"],
   credential: Credential.new(
     host: ENV["SATURNCI_API_HOST"],
-    user_id: ENV["SATURNCI_API_USER_ID"],
+    user_id: ENV["SATURNCI_USER_ID"],
     api_token: ENV["SATURNCI_API_TOKEN"],
   )
 )
