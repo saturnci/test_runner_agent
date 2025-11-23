@@ -8,8 +8,11 @@ module SaturnCIRunnerAPI
     end
 
     def execute
+      user_id = ENV["SATURNCI_USER_ID"] || ENV["USER_ID"]
+      api_token = ENV["SATURNCI_API_TOKEN"] || ENV["USER_API_TOKEN"]
+
       command = <<~COMMAND
-        curl -s -f -u #{ENV["USER_ID"]}:#{ENV["USER_API_TOKEN"]} \
+        curl -s -f -u #{user_id}:#{api_token} \
             -X POST \
             -H "Content-Type: #{@content_type}" \
             -d "#{@content}" #{url}
