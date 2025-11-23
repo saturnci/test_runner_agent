@@ -55,7 +55,7 @@ module SaturnCIRunnerAPI
         r = Net::HTTP::Patch.new(url)
       end
 
-      r.basic_auth(ENV["SATURNCI_USER_ID"], ENV["SATURNCI_USER_API_TOKEN"])
+      r.basic_auth(ENV["SATURNCI_USER_ID"] || ENV["USER_ID"], ENV["SATURNCI_API_TOKEN"] || ENV["USER_API_TOKEN"])
       r["Content-Type"] = "application/json"
       r.body = @body.to_json if @body
       r
