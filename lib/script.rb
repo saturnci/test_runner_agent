@@ -46,6 +46,7 @@ def execute_script
     "runs/#{ENV["RUN_ID"]}/system_logs"
   )
   system_log_stream.start
+  sleep(5) # to give log streaming time to kick in
 
   puts "Test runner agent version: #{`git show -s --format=%ci HEAD`.strip} #{`git rev-parse HEAD`.strip}"
   puts "Runner ready"
