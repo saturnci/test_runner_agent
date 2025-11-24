@@ -1,6 +1,8 @@
 require_relative "./api_request"
 
 class TestRunnerAgent
+  CONSECUTIVE_ERROR_THRESHOLD = 5
+
   def initialize(test_runner_id:, credential:)
     @test_runner_id = test_runner_id
     @credential = credential
@@ -18,6 +20,7 @@ class TestRunnerAgent
     )
 
     check_count = 0
+    consecutive_error_count = 0
 
     loop do
       begin
@@ -25,15 +28,20 @@ class TestRunnerAgent
 
         if response.code != "200"
           puts "Error checking for assignments: #{response.body}"
-          send_event("error")
-          return
-        end
+          consecutive_error_count += 1
 
-        assignments = JSON.parse(response.body)
+          if consecutive_error_count >= CONSECUTIVE_ERROR_THRESHOLD
+            send_event("error")
+            return
+          end
+        else
+          consecutive_error_count = 0
+          assignments = JSON.parse(response.body)
 
-        if assignments.any?
-          send_event("assignment_acknowledged")
-          return assignments.first
+          if assignments.any?
+            send_event("assignment_acknowledged")
+            return assignments.first
+          end
         end
 
         sleep interval_in_seconds

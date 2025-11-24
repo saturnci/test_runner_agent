@@ -69,5 +69,32 @@ describe TestRunnerAgent do
         test_runner_agent.listen_for_assignment
       end
     end
+
+    context "5 consecutive errors" do
+      before do
+        stub_request(:get, "https://app.saturnci.com/api/v1/test_runners/#{test_runner_id}/test_runner_assignments").
+          to_return(status: 500, body: "Internal Server Error", headers: {}).times(5)
+      end
+
+      it "sends an error event" do
+        expect(test_runner_agent).to receive(:send_event).with("error")
+        test_runner_agent.listen_for_assignment(interval_in_seconds: 0)
+      end
+    end
+
+    context "4 consecutive errors followed by a 200" do
+      before do
+        stub_request(:get, "https://app.saturnci.com/api/v1/test_runners/#{test_runner_id}/test_runner_assignments").
+          to_return(status: 500).times(4).then.
+          to_return(status: 200, body: [{ run_id: "abc123" }].to_json)
+
+        stub_request(:post, "https://app.saturnci.com/api/v1/test_runners/#{test_runner_id}/test_runner_events")
+      end
+
+      it "does not send an error event" do
+        expect(test_runner_agent).not_to receive(:send_event).with("error")
+        test_runner_agent.listen_for_assignment(interval_in_seconds: 0)
+      end
+    end
   end
 end
