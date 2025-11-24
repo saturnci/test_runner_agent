@@ -53,7 +53,7 @@ class TestRunnerAgent
     ENV["HOST"] = @credential.host
     ENV["SATURNCI_USER_ID"] = @credential.user_id
     ENV["USER_ID"] = @credential.user_id
-    ENV["SATURNCI_API_TOKEN"] = @credential.api_token
+    ENV["SATURNCI_USER_API_TOKEN"] = @credential.api_token
     ENV["USER_API_TOKEN"] = @credential.api_token
 
     ENV["TEST_SUITE_RUN_ID"] = assignment["test_suite_run_id"]
