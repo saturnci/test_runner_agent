@@ -4,7 +4,7 @@ class DryRun
   end
 
   def command
-    "docker compose -f .saturnci/docker-compose.yml run #{@docker_service_name} bundle exec rspec --dry-run"
+    "docker compose -f .saturnci/docker-compose.yml run --no-TTY #{@docker_service_name} bundle exec rspec --dry-run"
   end
 
   def expected_count
@@ -17,6 +17,11 @@ class DryRun
     end
 
     line_with_count = full_output.split("\n").find { |line| line.match(/(\d+) example/) }
+
+    if line_with_count.nil?
+      raise "Could not find example count in RSpec dry-run output"
+    end
+
     line_with_count.match(/(\d+) example/)[1].to_i
   end
 
