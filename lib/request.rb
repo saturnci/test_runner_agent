@@ -1,9 +1,11 @@
 require "net/http"
 require "uri"
 require "json"
+require_relative "api_config"
 
 module SaturnCIRunnerAPI
   class Request
+    include APIConfig
     def initialize(host, method, endpoint, body = nil)
       @host = host
       @method = method
@@ -64,7 +66,7 @@ module SaturnCIRunnerAPI
     private
 
     def url
-      URI("#{@host}/api/v1/#{@endpoint}")
+      URI("#{@host}#{API_BASE_PATH}/#{@endpoint}")
     end
   end
 end

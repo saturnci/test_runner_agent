@@ -1,8 +1,11 @@
 require "net/http"
 require "uri"
 require "json"
+require_relative "api_config"
 
 class APIRequest
+  include APIConfig
+
   def initialize(credential:, method:, endpoint:, body: {}, debug: false)
     @credential = credential
     @method = method
@@ -10,7 +13,7 @@ class APIRequest
     @body = body
     @debug = debug
 
-    @uri = URI("#{@credential.host}/api/v1/#{@endpoint}")
+    @uri = URI("#{@credential.host}#{API_BASE_PATH}/#{@endpoint}")
   end
 
   def response

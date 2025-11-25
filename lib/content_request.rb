@@ -1,5 +1,8 @@
+require_relative "api_config"
+
 module SaturnCIRunnerAPI
   class ContentRequest
+    include APIConfig
     def initialize(host:, api_path:, content_type:, content:)
       @host = host
       @api_path = api_path
@@ -24,7 +27,7 @@ module SaturnCIRunnerAPI
     private
 
     def url
-      "#{@host}/api/v1/#{@api_path}"
+      "#{@host}#{API_BASE_PATH}/#{@api_path}"
     end
   end
 end
