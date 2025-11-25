@@ -161,6 +161,10 @@ def execute_script
   response = client.patch(endpoint, { dry_run_example_count: dry_run.expected_count })
   puts "Dry run example count response code: #{response.code}"
 
+  unless response.code[0] == "2"
+    raise "Failed to send dry run example count to API. Response code: #{response.code}, Body: #{response.body}"
+  end
+
   puts "Starting to stream test output"
   File.open(RSPEC_DOCUMENTATION_OUTPUT_FILENAME, 'w') {}
 
