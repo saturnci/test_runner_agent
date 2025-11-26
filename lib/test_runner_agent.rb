@@ -59,8 +59,6 @@ class TestRunnerAgent
     require_relative "./script"
 
     ENV["HOST"] = @credential.host
-    ENV["SATURNCI_USER_ID"] = @credential.user_id
-    ENV["SATURNCI_USER_API_TOKEN"] = @credential.api_token
 
     ENV["TEST_SUITE_RUN_ID"] = assignment["test_suite_run_id"]
     ENV["RUN_ID"] = assignment["run_id"]
