@@ -48,8 +48,6 @@ def execute_script
   system_log_stream.start
   sleep(5) # to give log streaming time to kick in
 
-  test_new_auth(client)
-
   puts "Test runner agent version: #{`git show -s --format=%ci HEAD`.strip} #{`git rev-parse HEAD`.strip}"
   puts "Runner ready"
   wait_for_dns_resolution
@@ -259,30 +257,4 @@ def send_screenshot_tar_file(source_dir:)
   response = screenshot_upload_request.execute
   puts "Screenshot tar response code: #{response.code}"
   puts response.body
-end
-
-def test_new_auth(client)
-  test_runner_id = ENV["TEST_RUNNER_ID"]
-  test_runner_token = ENV["TEST_RUNNER_ACCESS_TOKEN"]
-
-  if test_runner_id.nil? || test_runner_token.nil?
-    puts "NEW AUTH TEST: Skipped - TEST_RUNNER_ID or TEST_RUNNER_ACCESS_TOKEN not set"
-    return
-  end
-
-  uri = URI("#{ENV["HOST"]}/api/v1/test_runner_agents/test_runners/#{test_runner_id}/test_runner_assignments")
-  request = Net::HTTP::Get.new(uri)
-  request.basic_auth(test_runner_id, test_runner_token)
-
-  response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == "https") do |http|
-    http.request(request)
-  end
-
-  if response.code == "200"
-    puts "NEW AUTH TEST: SUCCESS - Test runner credentials work!"
-  else
-    puts "NEW AUTH TEST: FAILED - Response code: #{response.code}, body: #{response.body}"
-  end
-rescue => e
-  puts "NEW AUTH TEST: ERROR - #{e.message}"
 end
