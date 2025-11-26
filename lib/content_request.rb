@@ -11,8 +11,8 @@ module SaturnCIRunnerAPI
     end
 
     def execute
-      user_id = ENV["SATURNCI_USER_ID"]
-      api_token = ENV["SATURNCI_USER_API_TOKEN"]
+      user_id = ENV["TEST_RUNNER_ID"]
+      api_token = ENV["TEST_RUNNER_ACCESS_TOKEN"]
 
       command = <<~COMMAND
         curl -s -f -u #{user_id}:#{api_token} \

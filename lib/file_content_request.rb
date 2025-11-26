@@ -17,7 +17,7 @@ module SaturnCIRunnerAPI
       request = Net::HTTP::Post.new(uri)
       request["Content-Type"] = @content_type
       request["X-Filename"] = File.basename(@file_path)
-      request.basic_auth(ENV["SATURNCI_USER_ID"], ENV["SATURNCI_USER_API_TOKEN"])
+      request.basic_auth(ENV["TEST_RUNNER_ID"], ENV["TEST_RUNNER_ACCESS_TOKEN"])
       request.body = File.read(@file_path)
 
       Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == "https") do |http|
