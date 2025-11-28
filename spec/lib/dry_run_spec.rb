@@ -21,7 +21,7 @@ describe DryRun do
 
   describe "#command" do
     it "returns the dry run command" do
-      expected_command = "docker compose -f .saturnci/docker-compose.yml run saturn_test_app bundle exec rspec --dry-run"
+      expected_command = "docker compose -f .saturnci/docker-compose.yml run --no-TTY saturn_test_app bundle exec rspec --dry-run"
       expect(dry_run.command).to eq(expected_command)
     end
   end
