@@ -1,3 +1,3 @@
 module APIConfig
-  API_BASE_PATH = "/api/v1/test_runner_agents"
+  API_BASE_PATH = "/api/v1/worker_agents"
 end
